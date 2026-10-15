@@ -12,10 +12,6 @@ Type the following command in the Terminal window to install:
 ```
 pip install tonetransposer
 ```
-Import the package into your project like so:
-```
-import tonetranspose.transpose as tp
-```
 
 ## Transposing
 
@@ -144,6 +140,3 @@ Direction can only be 'Ascending' and 'Descending', however the columns for sort
 ```
 SortKeys.KeyPattern, SortKeys.Count, SortKeys.WhiteCount, SortKeys.BlackCount
 ```
-
-
-
