@@ -10,7 +10,7 @@ It is designed to help musicians analyze tone patterns on a piano.
 
 Type the following command in the Terminal window to install:
 ```
-pip install tonetransposer==0.0.5
+pip install tonetransposer
 ```
 Import the package into your project like so:
 ```
@@ -58,7 +58,7 @@ B | B, Eb, Gb
 
 You can change the notation that is presented by passing a NoteNameType object value to the 'to_string()' method. 
 Here are some values that can be passed: NoteNameType.Flat, NoteNameType.Sharp, NoteNameType.Enharmonic. Every method in the library
-defaults to 'Enharmonic' (i.e showing both both the sharp and flat) when no value is passed through.
+defaults to 'Enharmonic' (i.e. showing both the sharp and flat) when no value is passed through.
 
 ```
 print(p.root_tone.get_note_name(NoteNameType.Flat),p.to_string(NoteNameType.Flat))
@@ -77,7 +77,7 @@ t.print_intervals()
 ['R', 'b3_#2', '5', 'b7_#6']
 ```
 
-You can also interate through these intervals using the 'get_intervals()' method:
+You can also iterate through these intervals using the 'get_intervals()' method:
 
 ```
 t = Transpose("C",["C","Eb","G","Bb"])

@@ -1,9 +1,9 @@
 import unittest
-from tonetranspose.transpose import Transpose, NoteNameType, Tone, ToneGroup, Progression, SortKeys, Direction
 import logging
-
-
-def full_range(start, stop): return range(start, stop + 1)
+from tonetranspose.transpose import (
+    Transpose, NoteNameType, Tone, ToneGroup, Progression, SortKeys, Direction
+)
+from tonetranspose.common import full_range
 
 
 class TestTone(unittest.TestCase):
@@ -11,7 +11,7 @@ class TestTone(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_valid_note_name(self):
+    def test_valid_note_name(self) -> None:
         self.assertEqual(True, Tone.is_valid_note_name("A"))
         self.assertEqual(True, Tone.is_valid_note_name("Bb"))
         self.assertEqual(True, Tone.is_valid_note_name("C#"))
@@ -20,14 +20,14 @@ class TestTone(unittest.TestCase):
         self.assertEqual(True, Tone.is_valid_note_name(["C", "E", "G"]))
         self.assertEqual(False, Tone.is_valid_note_name(["C", "2", "G"]))
 
-    def test_valid_pitch(self):
+    def test_valid_pitch(self) -> None:
         self.assertEqual(False, Tone.is_valid_pitch(13))
         self.assertEqual(False, Tone.is_valid_pitch(0))
         self.assertEqual(False, Tone.is_valid_pitch(-1))
         for pitch in full_range(1, 12):
             self.assertEqual(True, Tone.is_valid_pitch(pitch))
 
-    def test_tone_object(self):
+    def test_tone_object(self) -> None:
         sharp_name = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
         flat_name = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
         enharmonic_name = ["C", "Db_C#", "D", "Eb_D#", "E", "F", "Gb_F#", "G", "Ab_G#", "A", "Bb_A#", "B"]
@@ -36,14 +36,14 @@ class TestTone(unittest.TestCase):
             tone = Tone(pitch)
             self.assertEqual(tone.get_flat_name(), flat_name[pitch - 1])
             self.assertEqual(tone.get_sharp_name(), sharp_name[pitch - 1])
-            self.assertEqual(tone.get_enharmonic(), enharmonic_name[pitch - 1])
+            self.assertEqual(tone.get_enharmonic_name(), enharmonic_name[pitch - 1])
 
-    def test_tone_instance(self):
+    def test_tone_instance(self) -> None:
         note = "G"
         tone = Tone.get_instance_from_name(note)
-        self.assertEqual(tone.get_enharmonic(), "G")
+        self.assertEqual(tone.get_enharmonic_name(), "G")
 
-    def test_note_name_type(self):
+    def test_note_name_type(self) -> None:
         self.assertEqual(Tone.get_notation_type("C"), NoteNameType.Enharmonic)
         self.assertEqual(Tone.get_notation_type("F#"), NoteNameType.Sharp)
         self.assertEqual(Tone.get_notation_type("Db"), NoteNameType.Flat)
@@ -55,10 +55,10 @@ class TestTone(unittest.TestCase):
 
 class TestToneGroup(unittest.TestCase):
 
-    def setUp(self):
+    def setUp(self) -> None:
         pass
 
-    def tone_group_creation(self):
+    def tone_group_creation(self) -> None:
         tone_group = ToneGroup.get_instance("D", ["D", "F#", "A"])
         self.assertEqual(tone_group.to_string(NoteNameType.Sharp), "D, F#, A")
         self.assertEqual(tone_group.to_string(NoteNameType.Flat), "D, Gb, A")
@@ -73,12 +73,12 @@ class TestTranspose(unittest.TestCase):
     def setUp(self):
         pass
 
-    def tone_group_summary_intervals(self):
+    def tone_group_summary_intervals(self) -> None:
         transpose = Transpose("C", ['C', 'E', 'G'])
         intervals = transpose.get_intervals()
         self.assertEqual(intervals, ['R', '3', '5'])
 
-    def tone_group_summary_keys(self):
+    def tone_group_summary_keys(self) -> None:
         transpose = Transpose("C", ['C', 'E', 'G'])
         summary_key = transpose.get_key_pattern_summary()
         self.assertEqual(len(summary_key), 6)
@@ -92,7 +92,7 @@ class TestTranspose(unittest.TestCase):
             if key not in keys:
                 self.assertRaises(KeyError)
 
-    def tone_group_summary_data(self):
+    def tone_group_summary_data(self) -> None:
         transpose = Transpose("C", ['C', 'E', 'G'])
         summary_keys = transpose.get_key_pattern_summary(NoteNameType.Flat)
         for summary_key in summary_keys:
@@ -115,7 +115,7 @@ class TestTranspose(unittest.TestCase):
                 self.assertEqual(summary_key.count, 1)
                 self.assertEqual(summary_key.root_notes, "B")
 
-    def test_all_transpositions(self):
+    def test_all_transpositions(self) -> None:
         transpose = Transpose("C", ['C', 'E', 'G'])
         transpositions = transpose.get_all_positions()
         for t in transpositions:
@@ -145,7 +145,7 @@ class TestTranspose(unittest.TestCase):
             elif pitch == 12:
                 self.assertEqual(t.to_string(), "B, Eb_D#, Gb_F#")
 
-    def test_interval_counts(self):
+    def test_interval_counts(self) -> None:
         notes = Transpose("D", ["A", "C", "F", "G", "B", "C", "G", "B", "C", "G", "B", "C"])
         counts1 = notes.get_intervals_counts(NoteNameType.Flat)
         self.assertEqual(str(counts1), "{'5': 1, 'b7': 4, 'b3': 1, '4': 3, '6': 3}")
@@ -154,7 +154,7 @@ class TestTranspose(unittest.TestCase):
         counts3 = notes.get_intervals_counts()
         self.assertEqual(str(counts3), "{'5': 1, 'b7_#6': 4, 'b3_#2': 1, '4': 3, '6': 3}")
 
-    def test_get_transposition_by_key(self):
+    def test_get_transposition_by_key(self) -> None:
         transpose = Transpose("C", ['C', 'E', 'G'])
         self.assertEqual(transpose.get_transposition(3).root_tone.get_note_name(NoteNameType.Flat), "D")
         self.assertEqual(transpose.get_transposition(3).to_string(NoteNameType.Flat), "D, Gb, A")
@@ -165,7 +165,7 @@ class TestTranspose(unittest.TestCase):
         self.assertEqual(transpose.get_transposition_for_named_key("C").to_string(), "C, E, G")
         self.assertEqual(transpose.get_transposition_for_named_key("A").to_string(), "A, Db_C#, E")
 
-    def test_transposition_creation(self):
+    def test_transposition_creation(self) -> None:
         # Tests to see if creating the transpose object using the instance method (input of a tonegroup)
         # is the same as creating a transpose object by directly calling the constructor
         # (input of note_name, and list of tone notes)
@@ -213,7 +213,7 @@ class TestTranspose(unittest.TestCase):
                     self.assertEqual(type(transpose1.note_name_type), type(transpose1.note_name_type))
                     self.assertEqual(transpose1.note_name_type, transpose1.note_name_type)
 
-    def test_sorting_key_patterns(self):
+    def test_sorting_key_patterns(self) -> None:
         transpose1 = Transpose("C", ["C", "Eb", "G", "Bb"])
 
         # test default sort order settings
@@ -254,10 +254,10 @@ class TestTranspose(unittest.TestCase):
 
 
 class TestProgression(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         pass
 
-    def test_root_notes(self):
+    def test_root_notes(self) -> None:
         tone_group2 = ToneGroup.get_instance("D", ["D", "E", "A"])
         tone_group5 = ToneGroup.get_instance("G", ["G", "B", "D"])
         tone_group1 = ToneGroup.get_instance("C", ["C", "E", "G"])
@@ -293,7 +293,7 @@ class TestProgression(unittest.TestCase):
             pitch += 1
 
 
-def run_tone_tests():
+def run_tone_tests() -> None:
     test_tone = TestTone()
     test_tone.test_tone_instance()
     test_tone.test_valid_note_name()
@@ -301,7 +301,7 @@ def run_tone_tests():
     test_tone.test_note_name_type()
 
 
-def run_transpose_tests():
+def run_transpose_tests() -> None:
     test_transpose = TestTranspose()
     test_transpose.tone_group_summary_intervals()
     test_transpose.tone_group_summary_keys()
@@ -313,17 +313,17 @@ def run_transpose_tests():
     test_transpose.test_sorting_key_patterns()
 
 
-def run_tone_group_tests():
+def run_tone_group_tests() -> None:
     test_tone_group = TestToneGroup()
     test_tone_group.tone_group_creation()
 
 
-def run_progression_tests():
+def run_progression_tests() -> None:
     test_progression = TestProgression()
     test_progression.test_root_notes()
 
 
-def run_all_tests():
+def run_all_tests() -> None:
     log = logging.getLogger("Transposer")
     logging.basicConfig(level=logging.INFO)
     log.info("Start testing")
